@@ -67,7 +67,7 @@ async def f(message: Message, state: FSMContext):
 async def f(message: Message, state: FSMContext):
     code = message.text
 
-    presentation = await PresentationFiles.get_or_none(lesson_number=code.split("-")[0], part_number=code.split("-")[1], class_number=code.split("-")[2])
+    presentation = await PresentationFiles.get_or_none(class_number=code.split("-")[0], part_number=code.split("-")[1], lesson_number=code.split("-")[2])
     if presentation:
         await message.answer_document(
             document=presentation.file_id,
