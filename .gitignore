@@ -1,0 +1,7 @@
+/.env
+/db.sqlite3
+/db.sqlite3-shm
+/db.sqlite3-wal
+/hisobot_barcha.xlsx
+/myenv
+/__pycache__

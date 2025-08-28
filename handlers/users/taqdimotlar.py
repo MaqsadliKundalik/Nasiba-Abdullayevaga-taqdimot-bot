@@ -1,0 +1,31 @@
+from aiogram import Router, F
+from aiogram.types import Message, CallbackQuery
+from aiogram.fsm.context import FSMContext
+from database.models.all_models import PresentationFiles, User
+from filters.users import IsPremUser
+
+router = Router()
+
+@router.message(F.text == "Taqdimot qidirish")
+async def f(message: Message):
+    await message.answer("📂 Taqdimot qidirish uchun uning kodini yuborasiz:\n\nNa'muna: 5-1-1\nBuni men 5-sinf 1-chorak 1-dars deb tushunaman. ✅")
+
+@router.message(IsPremUser(), F.text.regexp(r"^\d{1,2}-\d{1,2}-\d{1,2}$"))
+async def f(message: Message):
+    code = message.text
+    lesson_number, part_number, class_number = code.split("-")
+    presentation = await PresentationFiles.get_or_none(
+        lesson_number=lesson_number,
+        part_number=part_number,
+        class_number=class_number
+    )
+    if presentation:
+        await message.answer_document(
+            presentation.file_id, 
+            caption=f"📚 <b>{presentation.lesson_name}</b>\n"
+                f"🏫 {presentation.class_number}-sinf {presentation.lesson_number}-dars ({presentation.part_number}-chorak)\n"
+                f"🌐 <b>Taqdimot tili:</b> {presentation.file_lang}",
+                parse_mode="HTML",
+                protect_content=True
+        )
+
