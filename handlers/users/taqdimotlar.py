@@ -24,7 +24,9 @@ async def f(message: Message):
             presentation.file_id, 
             caption=f"📚 <b>{presentation.lesson_name}</b>\n"
                 f"🏫 {presentation.class_number}-sinf {presentation.lesson_number}-dars ({presentation.part_number}-chorak)\n"
-                f"🌐 <b>Taqdimot tili:</b> {presentation.file_lang}",
+                f"🌐 <b>Taqdimot tili:</b> {presentation.file_lang}\n\n"
+                f"Taqdimotlarda ko'rsatilgan fayllarni INFOTAQDIMOT kanalidan yuklab olishingiz mumkin: https://t.me/INFOTAQDIMOT\n"
+                f"Attestatsiyaga tayyorlov guruhimiz: t.me/informatiklarahil",
                 parse_mode="HTML",
                 protect_content=True
         )
