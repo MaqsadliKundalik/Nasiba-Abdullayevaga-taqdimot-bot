@@ -32,4 +32,4 @@ async def f(message: Message):
                 protect_content=True
         )
     else:
-        await message.answer("❌ Taqdimot topilmadi!", reply_markup=taqdimotlar_menu)
+        await message.answer("❌ Taqdimot topilmadi!")
