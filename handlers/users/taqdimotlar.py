@@ -13,12 +13,7 @@ async def f(message: Message):
 @router.message(IsPremUser(), F.text.regexp(r"^\d{1,2}-\d{1,2}-\d{1,2}$"))
 async def f(message: Message):
     code = message.text
-    lesson_number, part_number, class_number = code.split("-")
-    presentation = await PresentationFiles.filter(
-        lesson_number=lesson_number,
-        part_number=part_number,
-        class_number=class_number
-    ).all()
+    presentation = await PresentationFiles.filter(class_number=code.split("-")[0], part_number=code.split("-")[1], lesson_number=code.split("-")[2]).all()
     if presentation:
         for pres in presentation:
             await message.answer_document(
