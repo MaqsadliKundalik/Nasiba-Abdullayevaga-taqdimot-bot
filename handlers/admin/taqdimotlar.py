@@ -67,16 +67,17 @@ async def f(message: Message, state: FSMContext):
 async def f(message: Message, state: FSMContext):
     code = message.text
 
-    presentation = await PresentationFiles.get_or_none(class_number=code.split("-")[0], part_number=code.split("-")[1], lesson_number=code.split("-")[2])
+    presentation = await PresentationFiles.filter(class_number=code.split("-")[0], part_number=code.split("-")[1], lesson_number=code.split("-")[2]).all()
     if presentation:
-        await message.answer_document(
-            document=presentation.file_id,
-            caption=f"""
-Dars nomi: {presentation.lesson_name}
-Taqdimot tili: {presentation.file_lang}
-Qo'shilgan sana: {presentation.created_at.date()}
+        for pres in presentation:
+            await message.answer_document(
+                document=pres.file_id,
+                caption=f"""
+Dars nomi: {pres.lesson_name}
+Taqdimot tili: {pres.file_lang}
+Qo'shilgan sana: {pres.created_at.date()}
             """,
-            reply_markup=delete_taqdimot_btn(presentation.id)
+            reply_markup=delete_taqdimot_btn(pres.id)
         )
     else:
         await message.answer("❌ Taqdimot topilmadi!", reply_markup=taqdimotlar_menu)
