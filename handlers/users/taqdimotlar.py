@@ -31,4 +31,5 @@ async def f(message: Message):
                 parse_mode="HTML",
                 protect_content=True
         )
-
+    else:
+        await message.answer("❌ Taqdimot topilmadi!", reply_markup=taqdimotlar_menu)
