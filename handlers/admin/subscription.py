@@ -34,3 +34,27 @@ YANGI OBUNA SO'ROVI:
         await callback.answer("Obuna muvaffaqiyatli tasdiqlandi.")
     else:
         await callback.answer("Foydalanuvchi topilmadi.")
+
+@router.callback_query(IsAdmin(), F.data.startswith("reject-payment"))
+async def reject_payment(callback: CallbackQuery, state: FSMContext):
+    user_id = callback.data.split("_")[1]
+    user = await User.get_or_none(tg_id=user_id)
+    if user:
+        await callback.bot.send_message(
+            chat_id=user.tg_id,
+            text="❌ To'lovingiz rad etildi. Iltimos, qayta urinib ko'ring yoki yordam uchun admin bilan bog'laning."
+        )
+        await callback.message.edit_caption(
+            caption=f"""
+YANGI OBUNA SO'ROVI:
+
+<b>Foydalanuvchi:</b> {user.name}
+<b>To'lov miqdori:</b> {SUBSCRIPTION_PRICE} so'm
+
+❌ Obuna rad etildi.
+                                            """,
+                                            parse_mode="HTML"
+        )
+        await callback.answer("Obuna rad etildi.")
+    else:
+        await callback.answer("Foydalanuvchi topilmadi.")

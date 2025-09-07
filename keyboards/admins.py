@@ -38,6 +38,8 @@ def delete_taqdimot_btn(taqdimot_id):
 def confirm_payment_btn(user_id):
     keyboard = InlineKeyboardBuilder()
     keyboard.button(text="✅ To'lovni tasdiqlash", callback_data=f"confirm-payment_{user_id}")
+    keyboard.button(text="❌ To'lovni rad etish", callback_data=f"reject-payment_{user_id}")
+    keyboard.adjust(1)
     return keyboard.as_markup()
 
 def aks_help_btn(user_id):
