@@ -50,38 +50,35 @@ async def cmd_start(message: Message):
     quarter_settings = await QuarterSettings.first()
     current_quarter = quarter_settings.current_quarter if quarter_settings else 1
     
-    # Foydalanuvchining obuna holatini aniqlash
-    if user.is_premium:
-        await message.answer("Xush kelibsiz! 😊\n\n💎 Sizda to'liq obuna mavjud (barcha choraklar)", reply_markup=main_menu_prem_users)
-    else:
-        # Chorak obunalarini tekshir
-        quarter_subscriptions = await UserQuarterSubscription.filter(user=user, is_active=True).all()
-        user_quarter_numbers = [sub.quarter_number for sub in quarter_subscriptions]
+    # Barcha foydalanuvchilar uchun bir xil logika
+    # Chorak obunalarini tekshir (is_premium ham, oddiy user ham)
+    quarter_subscriptions = await UserQuarterSubscription.filter(user=user, is_active=True).all()
+    user_quarter_numbers = [sub.quarter_number for sub in quarter_subscriptions]
+    
+    if quarter_subscriptions:
+        # Hozirgi chorak uchun obuna bor yoki yo'qligini tekshir
+        has_current_quarter = current_quarter in user_quarter_numbers
         
-        if quarter_subscriptions:
-            # Hozirgi chorak uchun obuna bor yoki yo'qligini tekshir
-            has_current_quarter = current_quarter in user_quarter_numbers
-            
-            if has_current_quarter:
-                # Hozirgi chorak obunasi bor
-                quarter_text = ", ".join([f"{q}-chorak" for q in sorted(user_quarter_numbers)])
-                await message.answer(
-                    f"Xush kelibsiz! 😊\n\n📚 Sizning obunalaringiz: {quarter_text}",
-                    reply_markup=main_menu_prem_users
-                )
-            else:
-                # Eski chorak obunasi bor, lekin hozirgi chorak yo'q
-                from keyboards.users import create_new_quarter_menu
-                quarter_text = ", ".join([f"{q}-chorak" for q in sorted(user_quarter_numbers)])
-                await message.answer(
-                    f"Xush kelibsiz! 😊\n\n📚 Sizning obunalaringiz: {quarter_text}\n\n"
-                    f"🆕 <b>{current_quarter}-chorak</b> mavjud! Yangi taqdimotlarga ruxsat olish uchun obuna harid qiling.",
-                    parse_mode="HTML",
-                    reply_markup=create_new_quarter_menu(current_quarter)
-                )
+        if has_current_quarter:
+            # Hozirgi chorak obunasi bor
+            quarter_text = ", ".join([f"{q}-chorak" for q in sorted(user_quarter_numbers)])
+            await message.answer(
+                f"Xush kelibsiz! 😊\n\n📚 Sizning obunalaringiz: {quarter_text}",
+                reply_markup=main_menu_prem_users
+            )
         else:
-            # Hech qanday obuna yo'q
-            await message.answer("Xush kelibsiz! 😊", reply_markup=main_users_menu)
+            # Eski chorak obunasi bor, lekin hozirgi chorak yo'q
+            from keyboards.users import create_new_quarter_menu
+            quarter_text = ", ".join([f"{q}-chorak" for q in sorted(user_quarter_numbers)])
+            await message.answer(
+                f"Xush kelibsiz! 😊\n\n📚 Sizning obunalaringiz: {quarter_text}\n\n"
+                f"🆕 <b>{current_quarter}-chorak</b> mavjud! Yangi taqdimotlarga ruxsat olish uchun obuna harid qiling.",
+                parse_mode="HTML",
+                reply_markup=create_new_quarter_menu(current_quarter)
+            )
+    else:
+        # Hech qanday obuna yo'q
+        await message.answer("Xush kelibsiz! 😊", reply_markup=main_users_menu)
 
 @router.message(F.text == "⬅️ Orqaga")
 async def back_to_main_menu(message: Message, state: FSMContext):
@@ -91,23 +88,20 @@ async def back_to_main_menu(message: Message, state: FSMContext):
     quarter_settings = await QuarterSettings.first()
     current_quarter = quarter_settings.current_quarter if quarter_settings else 1
     
-    # Foydalanuvchining obuna holatini aniqlash
-    if user.is_premium:
-        await message.answer("⬅️ Asosiy menyuga qaytdik", reply_markup=main_menu_prem_users)
-    else:
-        quarter_subscriptions = await UserQuarterSubscription.filter(user=user, is_active=True).all()
-        user_quarter_numbers = [sub.quarter_number for sub in quarter_subscriptions]
+    # Barcha foydalanuvchilar uchun bir xil logika
+    quarter_subscriptions = await UserQuarterSubscription.filter(user=user, is_active=True).all()
+    user_quarter_numbers = [sub.quarter_number for sub in quarter_subscriptions]
+    
+    if quarter_subscriptions:
+        # Hozirgi chorak uchun obuna bor yoki yo'qligini tekshir
+        has_current_quarter = current_quarter in user_quarter_numbers
         
-        if quarter_subscriptions:
-            # Hozirgi chorak uchun obuna bor yoki yo'qligini tekshir
-            has_current_quarter = current_quarter in user_quarter_numbers
-            
-            if has_current_quarter:
-                await message.answer("⬅️ Asosiy menyuga qaytdik", reply_markup=main_menu_prem_users)
-            else:
-                # Yangi chorak tugmasini ko'rsatish
-                from keyboards.users import create_new_quarter_menu
-                await message.answer("⬅️ Asosiy menyuga qaytdik", reply_markup=create_new_quarter_menu(current_quarter))
+        if has_current_quarter:
+            await message.answer("⬅️ Asosiy menyuga qaytdik", reply_markup=main_menu_prem_users)
         else:
-            await message.answer("⬅️ Asosiy menyuga qaytdik", reply_markup=main_users_menu)
+            # Yangi chorak tugmasini ko'rsatish
+            from keyboards.users import create_new_quarter_menu
+            await message.answer("⬅️ Asosiy menyuga qaytdik", reply_markup=create_new_quarter_menu(current_quarter))
+    else:
+        await message.answer("⬅️ Asosiy menyuga qaytdik", reply_markup=main_users_menu)
     await state.clear()

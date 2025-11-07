@@ -23,23 +23,14 @@ async def search_presentation(message: Message):
         await message.answer("❌ Avval ro'yxatdan o'ting!")
         return
     
-    # Foydalanuvchining ruxsatlarini tekshir
-    has_access = False
+    # Foydalanuvchining chorak obunasini tekshir
+    quarter_subscription = await UserQuarterSubscription.get_or_none(
+        user=user, 
+        quarter_number=part_number, 
+        is_active=True
+    )
     
-    # To'liq premium tekshir
-    if user.is_premium:
-        has_access = True
-    else:
-        # Chorak obunasini tekshir
-        quarter_subscription = await UserQuarterSubscription.get_or_none(
-            user=user, 
-            quarter_number=part_number, 
-            is_active=True
-        )
-        if quarter_subscription:
-            has_access = True
-    
-    if not has_access:
+    if not quarter_subscription:
         await message.answer(
             f"❌ {part_number}-chorak taqdimotlariga ruxsatingiz yo'q!\n\n"
             f"Bu chorak uchun obuna harid qiling: /start"

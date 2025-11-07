@@ -21,10 +21,6 @@ class HasQuarterAccess(Filter):
         if not user:
             return False
         
-        # Agar to'liq premium bo'lsa
-        if user.is_premium:
-            return True
-        
         # Agar quarter_number berilmagan bo'lsa, hozirgi chorakni tekshir
         if self.quarter_number is None:
             quarter_settings = await QuarterSettings.first()
