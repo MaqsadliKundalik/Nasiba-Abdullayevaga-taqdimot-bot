@@ -3,6 +3,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 admin_main_menu = ReplyKeyboardBuilder()
 admin_main_menu.button(text="👤 Foydalanuvchilar")
 admin_main_menu.button(text="📂 Taqdimotlar")
+admin_main_menu.button(text="⚙️ Chorak sozlamalari")
 admin_main_menu.button(text="✉️ Xabar yuborish")
 admin_main_menu.adjust(2)
 admin_main_menu = admin_main_menu.as_markup(resize_keyboard=True)
@@ -35,14 +36,30 @@ def delete_taqdimot_btn(taqdimot_id):
     keyboard.button(text="🗑️ Taqdimotni o'chirish", callback_data=f"delete-taqdimot_{taqdimot_id}")
     return keyboard.as_markup()
 
-def confirm_payment_btn(user_id):
-    keyboard = InlineKeyboardBuilder()
-    keyboard.button(text="✅ To'lovni tasdiqlash", callback_data=f"confirm-payment_{user_id}")
-    keyboard.button(text="❌ To'lovni rad etish", callback_data=f"reject-payment_{user_id}")
-    keyboard.adjust(1)
-    return keyboard.as_markup()
-
 def aks_help_btn(user_id):
     keyboard = InlineKeyboardBuilder()
     keyboard.button(text="Javob berish", callback_data=f"help_{user_id}")
+    return keyboard.as_markup()
+
+quarter_settings_menu = ReplyKeyboardBuilder()
+quarter_settings_menu.button(text="📊 Hozirgi chorakni ko'rish")
+quarter_settings_menu.button(text="🔄 Chorakni o'zgartirish")
+quarter_settings_menu.button(text="⬅️ Orqaga")
+quarter_settings_menu.adjust(1)
+quarter_settings_menu = quarter_settings_menu.as_markup(resize_keyboard=True)
+
+quarter_select_menu = ReplyKeyboardBuilder()
+quarter_select_menu.button(text="1-chorak")
+quarter_select_menu.button(text="2-chorak")
+quarter_select_menu.button(text="3-chorak")
+quarter_select_menu.button(text="4-chorak")
+quarter_select_menu.button(text="⬅️ Orqaga")
+quarter_select_menu.adjust(2)
+quarter_select_menu = quarter_select_menu.as_markup(resize_keyboard=True)
+
+def confirm_quarter_payment_btn(user_id, quarter_number):
+    keyboard = InlineKeyboardBuilder()
+    keyboard.button(text="✅ To'lovni tasdiqlash", callback_data=f"confirm-quarter-payment_{user_id}_{quarter_number}")
+    keyboard.button(text="❌ To'lovni rad etish", callback_data=f"reject-quarter-payment_{user_id}_{quarter_number}")
+    keyboard.adjust(1)
     return keyboard.as_markup()

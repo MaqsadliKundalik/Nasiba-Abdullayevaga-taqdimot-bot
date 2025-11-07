@@ -13,3 +13,13 @@ main_menu_prem_users.button(text="Mening profilim")
 main_menu_prem_users.button(text="Yordam")
 main_menu_prem_users.adjust(1)
 main_menu_prem_users = main_menu_prem_users.as_markup(resize_keyboard=True)
+
+def create_new_quarter_menu(quarter_number):
+    """Yangi chorak uchun klaviatura yaratish"""
+    keyboard = ReplyKeyboardBuilder()
+    keyboard.button(text="Taqdimot qidirish")
+    keyboard.button(text=f"🆕 {quarter_number}-chorak sotib olish")
+    keyboard.button(text="Mening profilim")
+    keyboard.button(text="Yordam")
+    keyboard.adjust(1)
+    return keyboard.as_markup(resize_keyboard=True)

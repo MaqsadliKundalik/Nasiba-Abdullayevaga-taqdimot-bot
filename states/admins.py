@@ -14,3 +14,6 @@ class SentMsgState(StatesGroup):
 
 class HelpAdminState(StatesGroup):
     waiting_for_msg = State()
+
+class QuarterSettingsState(StatesGroup):
+    waiting_for_quarter = State()
