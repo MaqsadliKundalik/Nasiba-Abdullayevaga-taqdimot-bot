@@ -24,10 +24,11 @@ async def show_profile(message: Message, state: FSMContext):
         # Obuna ma'lumotlari
         profile_text += f"💎 <b>Obuna holati:</b>\n"
         
-        if user.is_premium:
-            profile_text += f"✅ To'liq obuna (barcha choraklar)\n"
-        elif quarter_subscriptions:
-            profile_text += f"📚 Chorak obunalari:\n"
+        if quarter_subscriptions:
+            if user.is_premium:
+                profile_text += f"📚 Premium obunalar:\n"
+            else:
+                profile_text += f"📚 Chorak obunalari:\n"
             for sub in sorted(quarter_subscriptions, key=lambda x: x.quarter_number):
                 profile_text += f"   ✅ {sub.quarter_number}-chorak\n"
         else:

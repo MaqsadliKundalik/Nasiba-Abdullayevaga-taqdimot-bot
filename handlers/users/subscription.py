@@ -12,11 +12,6 @@ router = Router()
 async def subscription_purchase(message: Message, state: FSMContext):
     user = await User.get_or_none(tg_id=message.from_user.id)
     
-    # To'liq premium tekshir
-    if user.is_premium:
-        await message.answer("✅ Siz allaqachon barcha choraklar uchun obuna harid qilgansiz!")
-        return
-    
     # Hozirgi chorakni ol
     quarter_settings = await QuarterSettings.first()
     current_quarter = quarter_settings.current_quarter if quarter_settings else 1
@@ -54,11 +49,6 @@ async def new_quarter_purchase(message: Message, state: FSMContext):
     quarter_number = int(message.text.split()[1].split("-")[0])
     
     user = await User.get_or_none(tg_id=message.from_user.id)
-    
-    # To'liq premium tekshir
-    if user.is_premium:
-        await message.answer("✅ Siz allaqachon barcha choraklar uchun obuna harid qilgansiz!")
-        return
     
     # Bu chorak uchun obuna bor yoki yo'qligini tekshir
     existing_subscription = await UserQuarterSubscription.get_or_none(
